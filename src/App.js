@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Box } from "@mui/material";
+import "./App.css";
+import MessageList from "./MessageList";
+import InputField from "./InputField";
+import AzureOpenAI from "./AzureOpenAI";
 
 function App() {
+  const [messages, setMessages] = useState([
+    {
+      content: "メッセージを選択し、送信ボタンを押してください",
+      role: "assistant",
+    },
+  ]); // （1）
+
+  const handleSend = async (text) => {
+    // （2）
+    // メッセージを追加する
+    setMessages((prevMessages) => [
+      // （3）
+      ...prevMessages,
+      { content: text, role: "user" },
+    ]);
+
+    const assistantMessage = await AzureOpenAI([
+      ...messages,
+      { content: text, role: "user" },
+    ]);
+
+    // メッセージを追加する
+    setMessages((prevMessages) => [
+      // （5）
+      ...prevMessages,
+      { content: assistantMessage, role: "assistant" },
+    ]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    // （6）
+    <Box className="App">
+      <MessageList messages={messages} />
+      <InputField onSend={handleSend} />
+    </Box>
   );
 }
 
