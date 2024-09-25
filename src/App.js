@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import "./App.css";
 import MessageList from "./MessageList";
 import InputField from "./InputField";
-import AzureOpenAI from "./AzureOpenAI";
+import MyComponent from "./MyComponent";
 
 function App() {
   const [messages, setMessages] = useState([
@@ -11,35 +11,36 @@ function App() {
       content: "メッセージを選択し、送信ボタンを押してください",
       role: "assistant",
     },
-  ]); // （1）
+  ]);
+
+  const [currentMessage, setCurrentMessage] = useState(""); // MyComponent に渡すメッセージを格納
 
   const handleSend = async (text) => {
-    // （2）
-    // メッセージを追加する
+    // ユーザーのメッセージを messages state に追加
     setMessages((prevMessages) => [
-      // （3）
       ...prevMessages,
       { content: text, role: "user" },
     ]);
 
-    const assistantMessage = await AzureOpenAI([
-      ...messages,
-      { content: text, role: "user" },
-    ]);
+    // MyComponent に渡すメッセージを更新
+    setCurrentMessage(text);
+  };
 
-    // メッセージを追加する
+  // MyComponent からの応答を処理するコールバック関数
+  const handleGPTResponse = (assistantMessage) => {
+    // GPT の応答を messages state に追加
     setMessages((prevMessages) => [
-      // （5）
       ...prevMessages,
       { content: assistantMessage, role: "assistant" },
     ]);
+    setCurrentMessage("");
   };
 
   return (
-    // （6）
     <Box className="App">
       <MessageList messages={messages} />
       <InputField onSend={handleSend} />
+      <MyComponent message={currentMessage} onGPTResponse={handleGPTResponse} />
     </Box>
   );
 }

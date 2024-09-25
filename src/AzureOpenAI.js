@@ -2,7 +2,8 @@
 import React from "react";
 
 const API_KEY = "05f217cda07f440b980511b5b5fa3d55"; // Azure OpenAI API キー
-const API_ENDPOINT = "https://gpt4-australia-region.openai.azure.com/"; // Azure OpenAI API エンドポイント
+const API_ENDPOINT =
+  "https://gpt4-australia-region.openai.azure.com/openai/deployments/sol-gpt4-Australia/chat/completions?api-version=2023-07-01-preview"; // Azure OpenAI API エンドポイント
 
 const AzureOpenAI = async (
   messages,
