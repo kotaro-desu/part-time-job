@@ -1,3 +1,15 @@
+ファイル構成
+src/
+  ├App.css
+  ├App.js
+  ├index.css
+  ├index.js
+  ├InputField.js  ────  選択ボタンのコンポーネント。jsonファイルを受けとって自動で追加。ペルソナの文もここで加えている。
+  ├MessageList.js  ────  チャット画面のコンポーネント
+  ├MyComponent.js  ────  GPTと接続するためのファイル。橋渡し的なの。
+  ├main.py  ────  GPTとAzure Ai Searchと接続しているファイル。サーバとして動かしてから使う。バックエンドでプロンプトの追加をしている。ここで追加したプロンプトは画面には表示されない。
+  ├preset_buttons.json  ────  ペルソナの有無、ボタンの名前、質問文を管理しているjsonファイル。ここを弄ることでボタンを減らしたり増やしたりできる。
+
 nodeが入っていること前提
 npx create-react-app {任意のフォルダ名}
 
@@ -14,6 +26,8 @@ pythonに使うライブラリのインストール
 #pip install fastapi
 #pip install uvicorn
 #pip install requests
+#pip install azure-core
+#pip install azure-search-documents
 
 サーバの起動（これをしないとGPTにアクセス出来ない）
 #main.pyのあるディレクトリに移動して実行
