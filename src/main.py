@@ -1,10 +1,9 @@
-import requests
-import json
-import os
 import openai
-import re
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents.indexes import SearchIndexClient
+from azure.search.documents import SearchClient
 
 app = FastAPI()
 
@@ -22,27 +21,47 @@ app.add_middleware(
 )
 
 openai.api_type = "azure"
-openai.base_url = "https://gpt4-australia-region.openai.azure.com/openai/deployments/sol-gpt4-Australia/chat/completions?api-version=2023-07-01-preview"  # Your Azure OpenAI resource's endpoint value.
-openai.api_version = "2023-07-01-preview" 
-openai.api_key = "05f217cda07f440b980511b5b5fa3d55" 
+openai.base_url = ""
+openai.api_version = "" 
+openai.api_key = "" 
 
-def askGPT(prefecture, city, cropGroup, question):
+# Set Credentials
+search_endpoint = ""
+search_api_key = ""
+index_name = ""
+credential = AzureKeyCredential(search_api_key)
+
+# Run an empty query (returns selected fields, all documents)
+search_client = SearchClient(endpoint=search_endpoint,
+                      index_name=index_name,
+                      credential=credential)
+
+def questionAiSearch(qes): 
+    results =  search_client.search(query_type='simple',
+        search_text=qes ,
+        select='chunk',
+        include_total_count=True,
+        top=1)
+    
+    for result in results:
+        #score = result["@search.score"]
+        chunk = result["chunk"]
+
+    return chunk
+
+    
+
+def askGPT(question,search_ans):
     response = openai.chat.completions.create(
         model="sol-gpt4-32k-token20k",
         messages=[
-            {"role": "system", "content": "数値の情報は必須です"},
-            {"role": "assistant", "content": prefecture + "の" + city + "に住んでいる"},
-            {"role": "assistant", "content": cropGroup + "を育てようとしている"},
+            {"role": "system", "content": "小学生の私でもわかるように説明してください。"},
             {"role": "user", "content": "情報に不足なく日本語で文章を補完してください"},
+            {"role":"user","content":search_ans},
             {"role": "user", "content": question},
         ]
     )
     return response.choices[0].message.content
-
-# 利用者情報 (必要に応じて変更)
-prefecture = "沖縄県"
-city = "那覇市"
-cropGroup = "トマト"
 
 @app.post("/api/gpt") 
 async def gpt_response(request: Request):
@@ -51,7 +70,8 @@ async def gpt_response(request: Request):
 
     if question:
         print(f"Received question: {question}")
-        response = askGPT(prefecture, city, cropGroup, question)
+        ai_search = questionAiSearch(question)
+        response = askGPT(question,ai_search)
         print(f"GPT response: {response}")
         return {"message": response}
     else:
