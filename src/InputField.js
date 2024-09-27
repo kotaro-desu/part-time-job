@@ -1,10 +1,16 @@
 // InputField.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
+import presetButtonsData from "./preset_buttons.json";
 
 export default function InputField({ onSend }) {
   const [text, setText] = useState("");
   const [selectedButton, setSelectedButton] = useState(null); // 選択されたボタンを管理する state
+  const [presetButtons, setPressButtons] = useState([]);
+
+  useEffect(() => {
+    setPressButtons(presetButtonsData);
+  }, []);
 
   const handleSendClick = () => {
     if (text.trim() !== "") {
@@ -20,176 +26,74 @@ export default function InputField({ onSend }) {
     if (group === 0) {
       prefix = "";
     } else if (group === 1) {
-      prefix = "あなたは荘司幸一郎です。";
-    } else if (group === 2) {
-      prefix = "あなたは荘司幸一郎の様に振舞ってください。";
+      prefix =
+        "あなたは荘司幸一郎です。小学生の私にもわかるように説明してください。";
     }
-    const fullMessage = `${prefix}${message}`;
+
+    const fullMessage = `${prefix}
+    ${message}`;
     setText(fullMessage);
     setSelectedButton(`${group}-${message}`); // ボタンを選択したときに state を更新
+  };
+
+  const renderPresetButtons = (group) => {
+    return presetButtons
+      .filter((button) => button.group === group)
+      .map((button, index) => (
+        <Button
+          key={index}
+          variant="outlined"
+          onClick={() => handlePresetMessage(button.message, button.group)}
+          className={`preset-button ${
+            selectedButton === `${button.group}-${button.message}`
+              ? "selected"
+              : ""
+          }`}
+        >
+          {button.label}
+        </Button>
+      ));
   };
 
   return (
     <Box className="input-container-wrapper">
       <Box className="input-container">
         <Box className="preset-group">
-          <Typography variant="subtitle1" gutterBottom>
-            <p>ノーペルソナ</p>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{
+              paddingLeft: "16px",
+              marginTop: "-10px",
+              marginBottom: "-15px",
+            }}
+          >
+            <p>荘司さんの人格なし</p>
           </Typography>
-          <Box className="preset-buttons">
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage("アップルバナナついて教えてください。", 0)
-              }
-              className={`preset-button ${
-                selectedButton === "0-アップルバナナついて教えてください。"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              アップルバナナ
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage(
-                  "マルエスファームについて教えてください。",
-                  0
-                )
-              }
-              className={`preset-button ${
-                selectedButton === "0-マルエスファームについて教えてください。"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              マルエスファーム
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage(
-                  "アップルバナナの美味しい食べ方について教えてください。",
-                  0
-                )
-              }
-              className={`preset-button ${
-                selectedButton ===
-                "0-アップルバナナの美味しい食べ方について教えてください。"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              アップルバナナの美味しい食べ方
-            </Button>
+          <Box
+            className="preset-buttons"
+            style={{ display: "flex", fexWrap: "wrap" }}
+          >
+            {renderPresetButtons(0)}
           </Box>
         </Box>
         <Box className="preset-group">
-          <Typography variant="subtitle1" gutterBottom>
-            <p>オーディエンスペルソナパターン</p>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{
+              paddingLeft: "16px",
+              marginTop: "-10px",
+              marginBottom: "-15px",
+            }}
+          >
+            <p>荘司さんの人格あり（ペルソナ）</p>
           </Typography>
-          <Box className="preset-buttons">
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage("アップルバナナついて教えてください。", 1)
-              }
-              className={`preset-button ${
-                selectedButton === "1-アップルバナナついて教えてください。"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              アップルバナナ
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage(
-                  "マルエスファームについて教えてください。",
-                  1
-                )
-              }
-              className={`preset-button ${
-                selectedButton === "1-マルエスファームについて教えてください。"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              マルエスファーム
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage("キッチンカーについて教えてください。", 1)
-              }
-              className={`preset-button ${
-                selectedButton === "1-キッチンカーについて教えてください。"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              キッチンカー
-            </Button>
-          </Box>
-        </Box>
-        <Box className="preset-group">
-          <Typography variant="subtitle1" gutterBottom>
-            <p>ペルソナパターン</p>
-          </Typography>
-          <Box className="preset-buttons">
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage(
-                  "アップルバナナの美味しい食べ方を教えてください。",
-                  2
-                )
-              }
-              className={`preset-button ${
-                selectedButton ===
-                "2-アップルバナナの美味しい食べ方を教えてください。"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              アップルバナナの美味しい食べ方
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage(
-                  "マルエスファームではアップルバナナ以外に何を栽培していますか？",
-                  2
-                )
-              }
-              className={`preset-button ${
-                selectedButton ===
-                "2-マルエスファームではアップルバナナ以外に何を栽培していますか？"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              マルエスファームで栽培しているもの
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handlePresetMessage(
-                  "台風の多い沖縄ではどのような備えをしますか？",
-                  2
-                )
-              }
-              className={`preset-button ${
-                selectedButton ===
-                "2-台風の多い沖縄ではどのような備えをしますか？"
-                  ? "selected"
-                  : ""
-              }`}
-            >
-              台風の備え
-            </Button>
+          <Box
+            className="preset-buttons"
+            style={{ display: "flex", flexWap: "wrap" }}
+          >
+            {renderPresetButtons(1)}
           </Box>
         </Box>
       </Box>
