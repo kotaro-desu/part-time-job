@@ -21,11 +21,11 @@ pythonに使うライブラリのインストール
 
 reactに使うパッケージのインストール
 #npm install ~で実行
-#	@chatscope
-#	@emotion
-#	@mui
-#	testing-library
-#	axios
+	@chatscope
+	@emotion
+	@mui
+	testing-library
+	axios
 	
 
 #npm start
