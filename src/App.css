@@ -1,13 +1,12 @@
-/* Appコンテナの基本スタイル設定 */
 .App {
   display: flex;
   flex-direction: column;
   height: 100vh;
   padding: 20px;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
-/* メッセージリストコンテナのスタイリング、スクロール可能 */
 .message-list {
   flex: 1;
   overflow-y: auto;
@@ -15,7 +14,6 @@
   flex-direction: column;
 }
 
-/* 個々のメッセージアイテムのスタイル設定 */
 .message {
   margin-bottom: 10px;
   padding: 10px;
@@ -23,41 +21,38 @@
   max-width: 70%;
 }
 
-/* ユーザーメッセージの配置と背景色設定 */
 .message.user {
   align-self: flex-end;
   background-color: #dcf8c6;
 }
 
-/* アシスタントメッセージの配置と背景色設定 */
 .message.assistant {
   align-self: flex-start;
   background-color: #f0f0f0;
 }
 
 .input-container {
-  display: flex; /* グループを横に並べる */
-  flex-direction: row;
-  align-items: flex-start;
-  margin-left: 10%;
-}
-
-.preset-buttons {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-right: 16px; /* ボタングループ間にスペースを追加 */
+  gap: 1px;
+  margin-left: 10%;
+  margin-bottom: 10px;
+}
+
+.preset-buttons {
+  display: block; /* Grid Layout を使用 */
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 5px;
+  font-size: 14px;
 }
 
 .preset-button {
   padding: 6px 12px;
   min-width: auto;
-  margin-right: 8px;
-  margin-bottom: 8px;
-}
-
-.preset-buttons:last-child {
-  margin-right: 0; /* 最後のボタングループはスペースなし */
+  margin-right: 8px; /* 右側のマージン */
+  margin-bottom: 8px; /* 下側のマージン */
 }
 
 .send-button {
@@ -65,23 +60,20 @@
 }
 
 .preset-button.selected {
-  background-color: #edff76; /* 選択時の背景色 (例: ライトブルー) */
+  background-color: #edff76;
 }
 
 .preset-group {
-  border: 1px solid #ccc; /* 枠線を追加 */
-  padding: 10px; /* パディングを追加 */
-  margin-bottom: 10px; /* グループ間にマージンを追加 */
-}
-
-.preset-buttons-group {
-  display: flex; /* ボタンのグループを横に並べる */
+  border: 1px solid #878787;
+  padding: 5px, 10px;
+  margin-bottom: 0px; /* 必要に応じて調整 */
+  flex: 1;
 }
 
 .input-container-wrapper {
-  /* 新しいラッパーのスタイル */
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* 送信ボタンを右端に配置 */
+  align-items: flex-end;
   margin-top: 20px;
 }
+
