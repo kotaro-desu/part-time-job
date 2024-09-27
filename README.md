@@ -10,22 +10,22 @@ git clone https://github.com/kotaro-desu/part-time-job.git
 node_modules以外は上記のファイルに置き換える
 
 pythonに使うライブラリのインストール
-pip install openai
-pip install fastapi
-pip install uvicorn
-pip install requests
+#pip install openai
+#pip install fastapi
+#pip install uvicorn
+#pip install requests
 
 サーバの起動（これをしないとGPTにアクセス出来ない）
-main.pyのあるディレクトリに移動して実行
-uvicorn main:app --reload
+#main.pyのあるディレクトリに移動して実行
+#uvicorn main:app --reload
 
 reactに使うパッケージのインストール
-npm install ~で実行
-	@chatscope
-	@emotion
-	@mui
-	testing-library
-	axios
+#npm install ~で実行
+#	@chatscope
+#	@emotion
+#	@mui
+#	testing-library
+#	axios
 	
 
-npm start
+#npm start
