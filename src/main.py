@@ -21,14 +21,14 @@ app.add_middleware(
 )
 
 openai.api_type = "azure"
-openai.base_url = ""
-openai.api_version = "" 
-openai.api_key = "" 
+openai.base_url = 
+openai.api_version = "2023-07-01-preview" 
+openai.api_key =
 
 # Set Credentials
-search_endpoint = ""
-search_api_key = ""
-index_name = ""
+search_endpoint = "https://solpacaisearch.search.windows.net"
+search_api_key = 
+index_name = "applebanana-index"
 credential = AzureKeyCredential(search_api_key)
 
 # Run an empty query (returns selected fields, all documents)
@@ -51,7 +51,7 @@ def questionAiSearch(qes):
 
     
 
-def askGPT(question,search_ans):
+def askGPT_prefix(question,search_ans):
     response = openai.chat.completions.create(
         model="sol-gpt4-32k-token20k",
         messages=[
@@ -63,15 +63,39 @@ def askGPT(question,search_ans):
     )
     return response.choices[0].message.content
 
+def askGPT_nonprefix(question,search_ans):
+    response = openai.chat.completions.create(
+        model="sol-gpt4-32k-token20k",
+        messages=[
+            {"role": "user", "content": "情報に不足なく日本語で文章を補完してください"},
+            {"role":"user","content":search_ans},
+            {"role": "user", "content": question},
+        ]
+    )
+    return response.choices[0].message.content
+
 @app.post("/api/gpt") 
 async def gpt_response(request: Request):
     body = await request.json()
-    question = body.get("message") 
+    messages = body.get("messages") 
+    group = body.get("group") # group を受け取る
+
+    if group==0:
+        question=messages[0]["content"]
+        message=question
+    else:
+        message=messages[1]["content"]
+        question=messages[0]["content"]+message
 
     if question:
         print(f"Received question: {question}")
-        ai_search = questionAiSearch(question)
-        response = askGPT(question,ai_search)
+        print(f"Received masseges: {messages}")
+        ai_search = questionAiSearch(message)
+        print(ai_search)
+        if group==0:
+            response = askGPT_nonprefix(question,ai_search)
+        else:
+            response = askGPT_prefix(question,ai_search)
         print(f"GPT response: {response}")
         return {"message": response}
     else:
