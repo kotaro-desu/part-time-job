@@ -15,15 +15,20 @@ function App() {
 
   const [currentMessage, setCurrentMessage] = useState(""); // MyComponent に渡すメッセージを格納
 
-  const handleSend = async (text) => {
+  const handleSend = async (text, group, prefix) => {
+    console.log("Received group:", group); // group の値を確認
+    console.log("Received prefix:", prefix);
+
+    const combinedText = prefix ? `${prefix}${text}` : text;
+
     // ユーザーのメッセージを messages state に追加
     setMessages((prevMessages) => [
       ...prevMessages,
-      { content: text, role: "user" },
+      { content: combinedText, role: "user", group: group },
     ]);
 
     // MyComponent に渡すメッセージを更新
-    setCurrentMessage(text);
+    setCurrentMessage({ text: text, group: group, prefix: prefix });
   };
 
   // MyComponent からの応答を処理するコールバック関数
