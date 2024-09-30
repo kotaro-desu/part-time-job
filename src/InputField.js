@@ -14,26 +14,25 @@ export default function InputField({ onSend }) {
 
   const handleSendClick = () => {
     if (text.trim() !== "") {
-      onSend(text);
+      const selectedGroup = selectedButton
+        ? parseInt(selectedButton.split("-")[0])
+        : null;
+
+      let prefix = "";
+      if (selectedGroup === 1) {
+        prefix = "あなたは荘司幸一郎です。";
+      }
+
+      onSend(text, selectedGroup, prefix);
+
       setText("");
-      setSelectedButton(null); // 送信後に選択状態を解除
+      setSelectedButton(null);
     }
   };
 
   const handlePresetMessage = (message, group) => {
-    // group パラメータを追加
-    let prefix = "";
-    if (group === 0) {
-      prefix = "";
-    } else if (group === 1) {
-      prefix =
-        "あなたは荘司幸一郎です。小学生の私にもわかるように説明してください。";
-    }
-
-    const fullMessage = `${prefix}
-    ${message}`;
-    setText(fullMessage);
-    setSelectedButton(`${group}-${message}`); // ボタンを選択したときに state を更新
+    setText(message); // prefix 無しのメッセージのみを格納
+    setSelectedButton(`${group}-${message}`);
   };
 
   const renderPresetButtons = (group) => {
