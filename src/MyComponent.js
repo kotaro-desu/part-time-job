@@ -6,10 +6,20 @@ function MyComponent({ message, onGPTResponse }) {
 
   useEffect(() => {
     console.log("Received message:", message);
-    if (message) {
+    if (message && message.text) {
+      let messagesToSend = [];
+
+      if (message.prefix) {
+        messagesToSend.push({ role: "user", content: message.prefix });
+      }
+      messagesToSend.push({ role: "user", content: message.text });
+
       // message が存在する場合のみリクエストを送信
       axios
-        .post("http://localhost:8000/api/gpt", { message: message }) // POST リクエストに変更
+        .post("http://localhost:8000/api/gpt", {
+          messages: messagesToSend,
+          group: message.group,
+        }) // POST リクエストに変更
         .then((response) => {
           onGPTResponse(response.data.message);
         })
