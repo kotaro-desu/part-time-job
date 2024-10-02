@@ -21,14 +21,14 @@ app.add_middleware(
 )
 
 openai.api_type = "azure"
-openai.base_url = 
-openai.api_version = "2023-07-01-preview" 
-openai.api_key =
+openai.base_url = ""  # Your Azure OpenAI resource's endpoint value.
+openai.api_version = "" 
+openai.api_key = "" 
 
 # Set Credentials
-search_endpoint = "https://solpacaisearch.search.windows.net"
-search_api_key = 
-index_name = "applebanana-index"
+search_endpoint = ""
+search_api_key = ""
+index_name = ""
 credential = AzureKeyCredential(search_api_key)
 
 # Run an empty query (returns selected fields, all documents)
@@ -51,13 +51,14 @@ def questionAiSearch(qes):
 
     
 
-def askGPT_prefix(question,search_ans):
+def askGPT_prefix(question,search_ans,character_info):
     response = openai.chat.completions.create(
         model="sol-gpt4-32k-token20k",
         messages=[
             {"role": "system", "content": "小学生の私でもわかるように説明してください。"},
             {"role": "user", "content": "情報に不足なく日本語で文章を補完してください"},
-            {"role":"user","content":search_ans},
+            {"role": "user", "content": character_info},
+            {"role":"user","content": search_ans},
             {"role": "user", "content": question},
         ]
     )
@@ -73,6 +74,8 @@ def askGPT_nonprefix(question,search_ans):
         ]
     )
     return response.choices[0].message.content
+
+soushi = "荘司幸一郎とはどんなん人物ですか？"
 
 @app.post("/api/gpt") 
 async def gpt_response(request: Request):
@@ -90,12 +93,14 @@ async def gpt_response(request: Request):
     if question:
         print(f"Received question: {question}")
         print(f"Received masseges: {messages}")
+        soushi_character = questionAiSearch(soushi)
+        soushi_character = "次の文章は荘司幸一郎に関する情報です。" + soushi_character
         ai_search = questionAiSearch(message)
         print(ai_search)
         if group==0:
             response = askGPT_nonprefix(question,ai_search)
         else:
-            response = askGPT_prefix(question,ai_search)
+            response = askGPT_prefix(question,ai_search,soushi_character)
         print(f"GPT response: {response}")
         return {"message": response}
     else:
