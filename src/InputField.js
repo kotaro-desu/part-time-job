@@ -43,10 +43,8 @@ export default function InputField({ onSend }) {
 
   const handleSendClick = () => {
     if (selectedQuestion) {
+      const selectedGroup = selectedPersonality ? selectedPersonality.value : 0;
       // selectedQuestionが選択されている場合のみ送信
-      const selectedGroup = selectedPersonality
-        ? selectedPersonality.value
-        : null;
       let prefix = "";
       if (selectedGroup === 1) {
         prefix = "あなたは荘司幸一郎です。";
@@ -126,21 +124,21 @@ export default function InputField({ onSend }) {
               value={selectedPersonality}
               onChange={handlePersonalityChange}
               options={personalityOptions}
-              placeholder="人格を選択してください"
+              placeholder="人格を選択するか下のフォームに書いてください"
               className="personality-select"
             />
             <Select
               value={selectedQuestion}
               onChange={handleQuestionChange}
               options={questionOptions}
-              placeholder="質問を選択してください"
+              placeholder="質問を選択するか下のフォームに書いてください"
               className="question-select"
             />
             <Select
               value={selectedAudiencePersona}
               onChange={handleAudiencePersonaChange}
               options={audiencePersona}
-              placeholder="聞き手の種類を選択してください"
+              placeholder="聞き手の種類を選択するか下のフォームに書いてください"
               className="audience-select"
             />
           </Box>
