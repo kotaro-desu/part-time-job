@@ -36,7 +36,11 @@ function App() {
     // GPT の応答を messages state に追加
     setMessages((prevMessages) => [
       ...prevMessages,
-      { content: assistantMessage, role: "assistant" },
+      {
+        content: assistantMessage,
+        role: "assistant",
+        group: currentMessage.group,
+      },
     ]);
     setCurrentMessage("");
   };
