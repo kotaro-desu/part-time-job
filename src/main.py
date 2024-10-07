@@ -22,13 +22,12 @@ app.add_middleware(
 
 openai.api_type = "azure"
 openai.base_url = ""  # Your Azure OpenAI resource's endpoint value.
-openai.api_version = "" 
-openai.api_key = "" 
+openai.api_version = "2023-07-01-preview"
+openai.api_key = ""
 
-# Set Credentials
 search_endpoint = ""
 search_api_key = ""
-index_name = ""
+index_name = "applebanana-index"
 credential = AzureKeyCredential(search_api_key)
 
 # Run an empty query (returns selected fields, all documents)
@@ -55,7 +54,6 @@ def askGPT_prefix(question,search_ans,character_info):
     response = openai.chat.completions.create(
         model="sol-gpt4-32k-token20k",
         messages=[
-            {"role": "system", "content": "小学生の私でもわかるように説明してください。"},
             {"role": "user", "content": "情報に不足なく日本語で文章を補完してください"},
             {"role": "user", "content": character_info},
             {"role":"user","content": search_ans},
@@ -105,3 +103,4 @@ async def gpt_response(request: Request):
         return {"message": response}
     else:
         return {"message": "質問がありません。"}
+
